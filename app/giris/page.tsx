@@ -1,7 +1,51 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import React, { useState } from "react";
+import { getSupabaseClient } from "../../lib/supabaseClient";
 
 export default function GirisPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage(null);
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      setMessage("Sunucu yapılandırması eksik: Supabase URL/Anon Key");
+      return;
+    }
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      setMessage("Giriş başarılı! Yönlendiriliyorsunuz...");
+      setTimeout(() => {
+        if (typeof window !== "undefined") window.location.href = "/";
+      }, 600);
+    } catch (err: any) {
+      setMessage(err?.message ?? "Bir hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setMessage(null);
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      setMessage("Sunucu yapılandırması eksik: Supabase URL/Anon Key");
+      return;
+    }
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: typeof window !== "undefined" ? window.location.origin : undefined },
+    });
+  };
   return (
     <main className="relative min-h-dvh w-full overflow-hidden bg-[#ff7a00]">
       {/* Animated decorative shapes */}
@@ -27,17 +71,26 @@ export default function GirisPage() {
             <p className="text-sm text-white/85 text-center">Hesabınla devam et.</p>
           </div>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleEmailLogin}>
             <div>
               <label className="block text-sm font-medium text-white mb-1">E-posta</label>
-              <input className="input-field" type="email" placeholder="ornek@mail.com" />
+              <input className="input-field" value={email} onChange={e=>setEmail(e.target.value)} type="email" placeholder="ornek@mail.com" required />
             </div>
             <div>
               <label className="block text-sm font-medium text-white mb-1">Şifre</label>
-              <input className="input-field" type="password" placeholder="••••••••" />
+              <input className="input-field" value={password} onChange={e=>setPassword(e.target.value)} type="password" placeholder="••••••••" required minLength={6} />
             </div>
-            <button type="submit" className="primary-btn">Giriş Yap</button>
+            <button type="submit" className="primary-btn" disabled={loading}>{loading ? "Giriş yapılıyor..." : "Giriş Yap"}</button>
           </form>
+
+          <div className="mt-4 text-center text-white/80">veya</div>
+          <button onClick={handleGoogleLogin} className="mt-3 w-full rounded-full bg-white text-black font-semibold py-2 shadow-lg hover:translate-y-[1px] transition-transform">
+            Google ile Giriş
+          </button>
+
+          {message && (
+            <p className="mt-4 text-sm text-center text-white/95">{message}</p>
+          )}
 
           <p className="mt-6 text-sm text-center text-white/90">
             Henüz hesabın yok mu?{" "}
