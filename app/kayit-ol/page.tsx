@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
-import { getSupabaseClient } from "../../lib/supabaseClient";
+import { supabase } from "../../lib/supabase";
 
 export default function KayitOlPage() {
   const [fullName, setFullName] = useState("");
@@ -15,11 +15,6 @@ export default function KayitOlPage() {
   const handleEmailSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
-    const supabase = getSupabaseClient();
-    if (!supabase) {
-      setMessage("Sunucu yapılandırması eksik: Supabase URL/Anon Key");
-      return;
-    }
     try {
       setLoading(true);
       const { error } = await supabase.auth.signUp({
@@ -38,15 +33,23 @@ export default function KayitOlPage() {
 
   const handleGoogleSignup = async () => {
     setMessage(null);
-    const supabase = getSupabaseClient();
-    if (!supabase) {
-      setMessage("Sunucu yapılandırması eksik: Supabase URL/Anon Key");
-      return;
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: typeof window !== "undefined" ? window.location.origin : undefined },
+      });
+      if (error) throw error;
+      // Some environments require manual navigation to the returned URL
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (err: any) {
+      setMessage(
+        err?.message?.includes("provider is not enabled")
+          ? "Google sağlayıcısı Supabase üzerinde etkin değil. Lütfen Dashboard > Authentication > Providers > Google kısmından etkinleştirin."
+          : err?.message ?? "Bir hata oluştu."
+      );
     }
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: typeof window !== "undefined" ? window.location.origin : undefined },
-    });
   };
   return (
     <main className="relative min-h-dvh w-full overflow-hidden bg-[#ff7a00]">

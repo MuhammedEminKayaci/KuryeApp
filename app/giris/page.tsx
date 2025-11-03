@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
-import { getSupabaseClient } from "../../lib/supabaseClient";
+import { supabase } from "../../lib/supabase";
 
 export default function GirisPage() {
   const [email, setEmail] = useState("");
@@ -14,11 +14,6 @@ export default function GirisPage() {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
-    const supabase = getSupabaseClient();
-    if (!supabase) {
-      setMessage("Sunucu yapılandırması eksik: Supabase URL/Anon Key");
-      return;
-    }
     try {
       setLoading(true);
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -36,15 +31,22 @@ export default function GirisPage() {
 
   const handleGoogleLogin = async () => {
     setMessage(null);
-    const supabase = getSupabaseClient();
-    if (!supabase) {
-      setMessage("Sunucu yapılandırması eksik: Supabase URL/Anon Key");
-      return;
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: typeof window !== "undefined" ? window.location.origin : undefined },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (err: any) {
+      setMessage(
+        err?.message?.includes("provider is not enabled")
+          ? "Google sağlayıcısı Supabase üzerinde etkin değil. Lütfen Dashboard > Authentication > Providers > Google kısmından etkinleştirin."
+          : err?.message ?? "Bir hata oluştu."
+      );
     }
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: typeof window !== "undefined" ? window.location.origin : undefined },
-    });
   };
   return (
     <main className="relative min-h-dvh w-full overflow-hidden bg-[#ff7a00]">
@@ -82,6 +84,10 @@ export default function GirisPage() {
             </div>
             <button type="submit" className="primary-btn" disabled={loading}>{loading ? "Giriş yapılıyor..." : "Giriş Yap"}</button>
           </form>
+
+          <div className="mt-3 text-center">
+            <Link href="/sifremi-unuttum" className="text-white/90 underline-offset-4 hover:underline text-sm">Şifremi unuttum?</Link>
+          </div>
 
           <div className="mt-4 text-center text-white/80">veya</div>
           <button onClick={handleGoogleLogin} className="mt-3 w-full rounded-full bg-white text-black font-semibold py-2 shadow-lg hover:translate-y-[1px] transition-transform">
