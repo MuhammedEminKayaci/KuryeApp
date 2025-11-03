@@ -11,10 +11,13 @@ export function getSupabaseClient(): SupabaseClient | null {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !key) {
-    if (typeof window !== "undefined") {
-      // eslint-disable-next-line no-console
-      console.warn("Supabase env vars missing: NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY");
-    }
+    const missing: string[] = [];
+    if (!url) missing.push("NEXT_PUBLIC_SUPABASE_URL");
+    if (!key) missing.push("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Supabase env vars missing: ${missing.join(", ")}. Did you set them in .env.local and restart the dev server?`
+    );
     return null;
   }
 
