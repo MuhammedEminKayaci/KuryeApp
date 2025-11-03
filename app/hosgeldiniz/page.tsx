@@ -9,8 +9,8 @@ export default function HosgeldinizPage() {
         <Image
           src="/images/headerlogo.png"
           alt="Motto Kurye Logo"
-          width={260}
-          height={80}
+          width={420}
+          height={120}
           priority
           className="drop-shadow-xl"
         />
