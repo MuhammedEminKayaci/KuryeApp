@@ -13,6 +13,26 @@ export default function KayitOlPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
+  const toTrError = (err: any): string => {
+    const msg = String(err?.message || "").toLowerCase();
+    if (msg.includes("already registered") || msg.includes("already exists")) {
+      return "Bu e‑posta adresiyle bir hesap zaten var.";
+    }
+    if (msg.includes("password should be at least") || msg.includes("weak password") || msg.includes("at least 6")) {
+      return "Şifre en az 6 karakter olmalıdır.";
+    }
+    if (msg.includes("invalid email") || msg.includes("email address is invalid")) {
+      return "Lütfen geçerli bir e‑posta adresi girin.";
+    }
+    if (msg.includes("rate limit")) {
+      return "Çok fazla deneme yapıldı. Lütfen biraz sonra tekrar deneyin.";
+    }
+    if (msg.includes("signups not allowed") || msg.includes("not allowed")) {
+      return "Kayıt işlemi şu anda kapalı.";
+    }
+    return "Bir hata oluştu. Lütfen tekrar deneyin.";
+  };
+
   const handleEmailSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
@@ -30,7 +50,10 @@ export default function KayitOlPage() {
       if (error) throw error;
       setMessage("Kayıt başarılı! E-posta doğrulaması gerekiyorsa lütfen gelen kutunuzu kontrol edin.");
     } catch (err: any) {
-      setMessage(err?.message ?? "Bir hata oluştu. Lütfen tekrar deneyin.");
+      // Konsola orijinal mesajı yazalım ama kullanıcıya Türkçe gösterelim
+      // eslint-disable-next-line no-console
+      console.warn("signup error:", err);
+      setMessage(toTrError(err));
     } finally {
       setLoading(false);
     }
@@ -50,10 +73,12 @@ export default function KayitOlPage() {
         window.location.href = data.url;
       }
     } catch (err: any) {
+      // eslint-disable-next-line no-console
+      console.warn("google signup error:", err);
       setMessage(
         err?.message?.includes("provider is not enabled")
           ? "Google sağlayıcısı Supabase üzerinde etkin değil. Lütfen Dashboard > Authentication > Providers > Google kısmından etkinleştirin."
-          : err?.message ?? "Bir hata oluştu."
+          : "Bir hata oluştu. Lütfen tekrar deneyin."
       );
     }
   };
