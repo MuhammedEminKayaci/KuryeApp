@@ -51,8 +51,8 @@ export default function Page() {
               <Link href="#" className="text-xl font-bold hover:text-white/80">İletişim</Link>
               <Link href="#" className="text-xl font-bold hover:text-white/80">Nasıl Çalışır</Link>
               <Link href="#" className="text-xl font-bold hover:text-white/80">Daha Fazla</Link>
-              <Link
-                href="#"
+                <Link
+                  href="/kayit-ol"
                 className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold"
               >
                 Kayıt Ol
@@ -72,8 +72,8 @@ export default function Page() {
             <div className="w-[2px] h-6 bg-white"></div>
             <Link href="#" className="hover:text-white/80">Daha Fazla</Link>
           </nav>
-          <Link
-            href="#"
+            <Link
+              href="/kayit-ol"
             className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold"
           >
             Kayıt Ol
@@ -214,7 +214,7 @@ export default function Page() {
 
               <div className="mt-8">
                 <Link
-                  href="#"
+                  href="/kayit-ol"
                   className="inline-block px-8 py-4 border-2 border-black rounded-full text-base font-semibold text-black hover:bg-black hover:text-white transition-colors"
                 >
                   Hemen Kayıt Ol
