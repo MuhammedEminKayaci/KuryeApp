@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { supabase } from "../../lib/supabase";
 
 export default function KayitOlPage() {
+  const baseUrl = "https://kurye-app-dusky.vercel.app";
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,10 +18,14 @@ export default function KayitOlPage() {
     setMessage(null);
     try {
       setLoading(true);
+      const redirectTo = `${baseUrl}/hosgeldiniz`;
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: fullName } },
+        options: {
+          data: { full_name: fullName },
+          emailRedirectTo: redirectTo,
+        },
       });
       if (error) throw error;
       setMessage("Kayıt başarılı! E-posta doğrulaması gerekiyorsa lütfen gelen kutunuzu kontrol edin.");
@@ -34,9 +39,10 @@ export default function KayitOlPage() {
   const handleGoogleSignup = async () => {
     setMessage(null);
     try {
+      const redirectTo = `${baseUrl}/hosgeldiniz`;
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: typeof window !== "undefined" ? window.location.origin : undefined },
+        options: { redirectTo },
       });
       if (error) throw error;
       // Some environments require manual navigation to the returned URL

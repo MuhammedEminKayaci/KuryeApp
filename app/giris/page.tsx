@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { supabase } from "../../lib/supabase";
 
 export default function GirisPage() {
+  const baseUrl = "https://kurye-app-dusky.vercel.app";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,7 @@ export default function GirisPage() {
       if (error) throw error;
       setMessage("Giriş başarılı! Yönlendiriliyorsunuz...");
       setTimeout(() => {
-        if (typeof window !== "undefined") window.location.href = "/";
+        if (typeof window !== "undefined") window.location.href = `${baseUrl}/hosgeldiniz`;
       }, 600);
     } catch (err: any) {
       setMessage(err?.message ?? "Bir hata oluştu. Lütfen tekrar deneyin.");
@@ -32,9 +33,10 @@ export default function GirisPage() {
   const handleGoogleLogin = async () => {
     setMessage(null);
     try {
+      const redirectTo = `${baseUrl}/hosgeldiniz`;
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: typeof window !== "undefined" ? window.location.origin : undefined },
+        options: { redirectTo },
       });
       if (error) throw error;
       if (data?.url) {

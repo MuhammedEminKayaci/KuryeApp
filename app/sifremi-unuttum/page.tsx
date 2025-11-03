@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { supabase } from "../../lib/supabase";
 
 export default function SifremiUnuttumPage() {
+  const baseUrl = "https://kurye-app-dusky.vercel.app";
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -15,7 +16,7 @@ export default function SifremiUnuttumPage() {
     setMessage(null);
     try {
       setLoading(true);
-      const redirectTo = typeof window !== "undefined" ? `${window.location.origin}/sifre-sifirla` : undefined;
+  const redirectTo = `${baseUrl}/sifre-sifirla`;
       const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
       if (error) throw error;
       setMessage("Şifre sıfırlama bağlantısı e-postanıza gönderildi.");
