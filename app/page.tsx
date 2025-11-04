@@ -3,9 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react"; // useState eklendi
+import { useRouter } from "next/navigation";
+import { supabase } from "../lib/supabase";
 
 export default function Page() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
+
+  const handleProtectedNav = async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data?.session) {
+      router.push("/hosgeldiniz");
+    } else {
+      router.push("/giris");
+    }
+  };
 
   return (
     <div className="min-h-screen w-full bg-white flex flex-col font-sans">
@@ -57,6 +69,12 @@ export default function Page() {
               >
                 Kayıt Ol
               </Link>
+              <Link
+                href="/giris"
+                className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold"
+              >
+                Giriş Yap
+              </Link>
             </nav>
           </div>
         )}
@@ -78,6 +96,12 @@ export default function Page() {
           >
             Kayıt Ol
           </Link>
+          <Link
+            href="/giris"
+            className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold"
+          >
+            Giriş Yap
+          </Link>
         </div>
       </header>
 
@@ -94,7 +118,7 @@ export default function Page() {
                 className="w-64 md:w-96"
                 priority
               />
-              <button className="bg-white text-[#ff7a00] border-2 border-[#ff7a00] px-30 py-3 rounded-full font-semibold">
+              <button onClick={handleProtectedNav} className="bg-white text-[#ff7a00] border-2 border-[#ff7a00] px-30 py-3 rounded-full font-semibold">
                 Kurye Bul
               </button>
             </div>
@@ -108,7 +132,7 @@ export default function Page() {
                 className="w-64 md:w-96"
                 priority
               />
-              <button className="bg-white text-black border-2 border-[#00000] px-30 py-3 rounded-full font-semibold">
+              <button onClick={handleProtectedNav} className="bg-white text-black border-2 border-[#00000] px-30 py-3 rounded-full font-semibold">
                 İşletme Bul
               </button>
             </div>
