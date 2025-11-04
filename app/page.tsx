@@ -65,13 +65,13 @@ export default function Page() {
               <Link href="#" className="text-xl font-bold hover:text-white/80">Daha Fazla</Link>
                 <Link
                   href="/kayit-ol"
-                className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold"
+                  className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold transition-colors transition-transform hover:bg-black hover:text-white hover:translate-y-[1px]"
               >
                 Kayıt Ol
               </Link>
               <Link
                 href="/giris"
-                className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold"
+                  className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold transition-colors transition-transform hover:bg-black hover:text-white hover:translate-y-[1px]"
               >
                 Giriş Yap
               </Link>
@@ -92,13 +92,13 @@ export default function Page() {
           </nav>
             <Link
               href="/kayit-ol"
-            className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold"
+            className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold transition-colors transition-transform hover:bg-black hover:text-white hover:translate-y-[1px]"
           >
             Kayıt Ol
           </Link>
           <Link
             href="/giris"
-            className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold"
+            className="bg-white text-black border-2 border-[#00000] px-10 py-2 rounded-full font-bold transition-colors transition-transform hover:bg-black hover:text-white hover:translate-y-[1px]"
           >
             Giriş Yap
           </Link>
@@ -118,7 +118,7 @@ export default function Page() {
                 className="w-64 md:w-96"
                 priority
               />
-              <button onClick={handleProtectedNav} className="bg-white text-[#ff7a00] border-2 border-[#ff7a00] px-30 py-3 rounded-full font-semibold">
+              <button onClick={handleProtectedNav} className="bg-white text-[#ff7a00] border-2 border-[#ff7a00] px-30 py-3 rounded-full font-semibold transition-colors transition-transform hover:bg-[#ff7a00] hover:text-white hover:translate-y-[1px] hover:shadow-md">
                 Kurye Bul
               </button>
             </div>
@@ -132,7 +132,7 @@ export default function Page() {
                 className="w-64 md:w-96"
                 priority
               />
-              <button onClick={handleProtectedNav} className="bg-white text-black border-2 border-[#00000] px-30 py-3 rounded-full font-semibold">
+              <button onClick={handleProtectedNav} className="bg-white text-black border-2 border-[#00000] px-30 py-3 rounded-full font-semibold transition-colors transition-transform hover:bg-black hover:text-white hover:translate-y-[1px] hover:shadow-md">
                 İşletme Bul
               </button>
             </div>
